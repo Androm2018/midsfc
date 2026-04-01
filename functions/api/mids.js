@@ -1,88 +1,94 @@
 // Cloudflare Pages Function — /api/mids
-// Scrapes the South of Scotland FL site for Mid Annandale fixtures, results & standings
-// Deployed automatically by Cloudflare Pages alongside index.html
+// Scrapes SOSL LeagueRepublic for Mid Annandale fixtures, results & standings
 
 const TEAM_URL      = 'https://sosfl.leaguerepublic.com/team/134996649/201795845.html';
 const STANDINGS_URL = 'https://sosfl.leaguerepublic.com/standingsForDate/178710391/2/-1/-1.html';
-const UA            = 'Mozilla/5.0 (compatible; MidsAFC-Website/1.0)';
+const UA            = 'Mozilla/5.0 (compatible; MidsAFC/1.0)';
 
-// ── HTML helpers ─────────────────────────────────────────────────────────────
-
-function stripHtml(html) {
-  // Preserve alt text from images before stripping tags
+// Decode common HTML entities then strip all tags
+function clean(html) {
   return html
-    .replace(/<img[^>]+alt="([^"]*)"[^>]*\/?>/gi, ' $1 ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&#\d+;/g, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function getHref(html) {
+function href(html) {
   const m = html.match(/href="([^"]+)"/);
   if (!m) return null;
   return m[1].startsWith('http') ? m[1] : 'https://sosfl.leaguerepublic.com' + m[1];
 }
 
-function getRows(html) {
-  const rows = [];
-  for (const [, rowHtml] of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)) {
-    const cells = [...rowHtml.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map(([, ch]) => ({
-      text: stripHtml(ch),
-      raw:  ch.toLowerCase(),
-      href: getHref(ch),
+// Extract all <tr> rows as arrays of cell objects
+function rows(html) {
+  const out = [];
+  for (const [, tr] of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const cells = [...tr.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map(([, c]) => ({
+      text: clean(c),
+      lower: clean(c).toLowerCase(),
+      link: href(c),
     }));
-    if (cells.length >= 4) rows.push(cells);
+    if (cells.length >= 4) out.push(cells);
   }
-  return rows;
+  return out;
 }
 
-// ── Parsers ──────────────────────────────────────────────────────────────────
+// Split "28/03/26  14:00" into ["28/03/26", "14:00"]
+// Works whether whitespace is spaces, &nbsp; (decoded), or mixed
+function splitDT(str) {
+  const s = str.trim();
+  // Match date pattern at start, then grab everything after it as time
+  const m = s.match(/^(\d{1,2}\/\d{2}\/\d{2,4})\s+(.+)$/);
+  return m ? [m[1].trim(), m[2].trim()] : [s, ''];
+}
+
+// Parse "3 - 1" or "0 - 2   (HT 0-0)" → [3, 1]
+function parseScore(str) {
+  // Only look at the part before any bracket "(HT...)"
+  const core = str.split('(')[0];
+  const m = core.match(/(\d+)\s*-\s*(\d+)/);
+  return m ? [parseInt(m[1]), parseInt(m[2])] : [0, 0];
+}
 
 function parseTeam(html) {
-  // Locate the Results and Matches sections by their h2 headings
-  const rIdx = html.search(/<h2[^>]*>\s*Results\s*</i);
-  const mIdx = html.search(/<h2[^>]*>\s*Matches\s*</i);
+  const rIdx = html.search(/<h2[^>]*>[^<]*Results[^<]*<\/h2>/i);
+  const mIdx = html.search(/<h2[^>]*>[^<]*Matches[^<]*<\/h2>/i);
 
-  const resultsHtml = (rIdx > -1 && mIdx > -1) ? html.slice(rIdx, mIdx) : '';
+  const resultsHtml = rIdx > -1 ? html.slice(rIdx, mIdx > rIdx ? mIdx : html.length) : '';
   const matchesHtml = mIdx > -1 ? html.slice(mIdx) : '';
 
-  function splitDateTime(raw) {
-    // "28/03/26   14:00" — two or more spaces separate date from time
-    const i = raw.search(/\s{2,}/);
-    return i > -1
-      ? [raw.slice(0, i).trim(), raw.slice(i).trim()]
-      : [raw.trim(), ''];
-  }
-
-  const results = getRows(resultsHtml)
-    .filter(r => / - /.test(r[3]?.text))
+  const results = rows(resultsHtml)
+    .filter(r => /\d\s*-\s*\d/.test(r[3]?.text))
     .map(r => {
-      const parts = r[3].text.split('-').map(s => parseInt(s.trim()));
-      const [date, time] = splitDateTime(r[1].text);
+      const [hs, as] = parseScore(r[3].text);
+      const [date, time] = splitDT(r[1].text);
       return {
         date,
         time,
-        type:      r[0].raw.includes('cup') ? 'cup' : 'league',
+        type:      r[0].lower.includes('cup') ? 'cup' : 'league',
         homeTeam:  r[2].text,
-        homeScore: isNaN(parts[0]) ? 0 : parts[0],
-        awayScore: isNaN(parts[1]) ? 0 : parts[1],
+        homeScore: hs,
+        awayScore: as,
         awayTeam:  r[4].text,
-        url:       r[2].href || r[4].href || null,
       };
     });
 
-  const fixtures = getRows(matchesHtml)
+  const fixtures = rows(matchesHtml)
     .filter(r => /\bvs\b/i.test(r[3]?.text))
     .map(r => {
-      const [date, time] = splitDateTime(r[1].text);
+      const [date, time] = splitDT(r[1].text);
       return {
         date,
         time,
-        type:     r[0].raw.includes('cup') ? 'cup' : 'league',
+        type:     r[0].lower.includes('cup') ? 'cup' : 'league',
         homeTeam: r[2].text,
         awayTeam: r[4].text,
         venue:    r[5]?.text || '',
-        url:      r[2].href || r[4].href || null,
       };
     });
 
@@ -90,30 +96,26 @@ function parseTeam(html) {
 }
 
 function parseStandings(html) {
-  return getRows(html)
-    .filter(r => !isNaN(parseInt(r[0]?.text)) && r.length >= 9)
+  return rows(html)
+    .filter(r => /^\d+$/.test(r[0]?.text) && r.length >= 9)
     .map(r => ({
       pos:  parseInt(r[0].text),
       team: r[1].text,
-      url:  r[1].href,
-      P:    parseInt(r[2].text)  || 0,
-      W:    parseInt(r[3].text)  || 0,
-      D:    parseInt(r[4].text)  || 0,
-      L:    parseInt(r[5].text)  || 0,
-      F:    parseInt(r[6].text)  || 0,
-      A:    parseInt(r[7].text)  || 0,
-      GD:   r[8]?.text           || '0',
+      P:    parseInt(r[2].text) || 0,
+      W:    parseInt(r[3].text) || 0,
+      D:    parseInt(r[4].text) || 0,
+      L:    parseInt(r[5].text) || 0,
+      F:    parseInt(r[6].text) || 0,
+      A:    parseInt(r[7].text) || 0,
+      GD:   r[8]?.text || '0',
       PTS:  parseInt(r[9]?.text) || 0,
     }));
 }
 
-// ── Handler ──────────────────────────────────────────────────────────────────
-
-export async function onRequest(context) {
+export async function onRequest() {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json',
-    // Cache for 30 minutes on Cloudflare's edge
     'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=300',
   };
 
@@ -122,6 +124,9 @@ export async function onRequest(context) {
       fetch(TEAM_URL,      { headers: { 'User-Agent': UA } }),
       fetch(STANDINGS_URL, { headers: { 'User-Agent': UA } }),
     ]);
+
+    if (!teamRes.ok)      throw new Error(`Team page: ${teamRes.status}`);
+    if (!standingsRes.ok) throw new Error(`Standings: ${standingsRes.status}`);
 
     const [teamHtml, standingsHtml] = await Promise.all([
       teamRes.text(),
@@ -137,7 +142,7 @@ export async function onRequest(context) {
     );
   } catch (err) {
     return new Response(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: err.message, stack: err.stack }),
       { status: 500, headers }
     );
   }
