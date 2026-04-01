@@ -568,20 +568,90 @@ function filterSquad(pos, btn) {
   btn.classList.add('active');
   document.querySelectorAll('.player-card').forEach(c => { c.style.display=(pos==='all'||c.dataset.pos===pos)?'':'none'; });
 }
+// ── Constants ──────────────────────────────────────────────────────────────
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function fmtDate(s) {
-  const p=s.split('/'); if(p.length!==3) return s;
+const PROXY  = 'https://api.allorigins.win/raw?url=';
+const TEAM_URL      = 'https://sosfl.leaguerepublic.com/team/134996649/201795845.html';
+const STANDINGS_URL = 'https://sosfl.leaguerepublic.com/standingsForDate/178710391/2/-1/-1.html';
+
+// ── HTML parsing helpers ───────────────────────────────────────────────────
+function clean(html) {
+  return html
+    .replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
+    .replace(/&#\d+;/g,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+}
+function tableRows(html) {
+  const out=[];
+  for(const [,tr] of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)){
+    const cells=[...tr.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map(([,c])=>({
+      text:clean(c), lower:clean(c).toLowerCase()
+    }));
+    if(cells.length>=4) out.push(cells);
+  }
+  return out;
+}
+function splitDT(str){
+  const m=str.trim().match(/^(\d{1,2}\/\d{2}\/\d{2,4})\s+(.+)$/);
+  return m?[m[1].trim(),m[2].trim()]:[str.trim(),''];
+}
+function parseScore(str){
+  const m=str.split('(')[0].match(/(\d+)\s*-\s*(\d+)/);
+  return m?[parseInt(m[1]),parseInt(m[2])]:[0,0];
+}
+
+// ── SOSL parsers ───────────────────────────────────────────────────────────
+function parseTeam(html){
+  const rIdx=html.search(/<h2[^>]*>[^<]*Results[^<]*<\/h2>/i);
+  const mIdx=html.search(/<h2[^>]*>[^<]*Matches[^<]*<\/h2>/i);
+  const resultsHtml=rIdx>-1?html.slice(rIdx,mIdx>rIdx?mIdx:html.length):'';
+  const matchesHtml=mIdx>-1?html.slice(mIdx):'';
+
+  const results=tableRows(resultsHtml)
+    .filter(r=>/\d\s*-\s*\d/.test(r[3]?.text))
+    .map(r=>{
+      const[hs,as]=parseScore(r[3].text);
+      const[date,time]=splitDT(r[1].text);
+      return{date,time,type:r[0].lower.includes('cup')?'cup':'league',
+        homeTeam:r[2].text,homeScore:hs,awayScore:as,awayTeam:r[4].text};
+    });
+
+  const fixtures=tableRows(matchesHtml)
+    .filter(r=>/\bvs\b/i.test(r[3]?.text))
+    .map(r=>{
+      const[date,time]=splitDT(r[1].text);
+      return{date,time,type:r[0].lower.includes('cup')?'cup':'league',
+        homeTeam:r[2].text,awayTeam:r[4].text,venue:r[5]?.text||''};
+    });
+
+  return{results,fixtures};
+}
+function parseStandings(html){
+  return tableRows(html)
+    .filter(r=>/^\d+$/.test(r[0]?.text)&&r.length>=9)
+    .map(r=>({
+      pos:parseInt(r[0].text),team:r[1].text,
+      P:parseInt(r[2].text)||0,W:parseInt(r[3].text)||0,
+      D:parseInt(r[4].text)||0,L:parseInt(r[5].text)||0,
+      F:parseInt(r[6].text)||0,A:parseInt(r[7].text)||0,
+      GD:r[8]?.text||'0',PTS:parseInt(r[9]?.text)||0
+    }));
+}
+
+// ── Renderers ──────────────────────────────────────────────────────────────
+function fmtDate(s){
+  const p=s.split('/');if(p.length!==3)return s;
   return `${parseInt(p[0])} ${MONTHS[parseInt(p[1])-1]} ${p[2].length===2?'20'+p[2]:p[2]}`;
 }
-function isMids(n) { return n.toLowerCase().includes('mid annandale'); }
-function resultCls(m) {
+function isMids(n){return n.toLowerCase().includes('mid annandale');}
+function resultCls(m){
   const h=isMids(m.homeTeam),ms=h?m.homeScore:m.awayScore,os=h?m.awayScore:m.homeScore;
   return ms>os?'result-win':ms<os?'result-loss':'result-draw';
 }
-function badge(t) { return `<span class="comp-badge">${t==='cup'?'Cup':'SOSL'}</span>`; }
-function renderResults(results) {
+function badge(t){return `<span class="comp-badge">${t==='cup'?'Cup':'SOSL'}</span>`;}
+
+function renderResults(results){
   document.getElementById('results-loading').style.display='none';
-  if(!results.length) return document.getElementById('results-error').style.display='';
+  if(!results.length)return document.getElementById('results-error').style.display='';
   document.getElementById('results-list').innerHTML=results.map(m=>{
     const h=isMids(m.homeTeam);
     return `<div class="fixture-row ${resultCls(m)}">
@@ -591,9 +661,9 @@ function renderResults(results) {
     </div>`;
   }).join('');
 }
-function renderFixtures(fixtures) {
+function renderFixtures(fixtures){
   document.getElementById('fixtures-loading').style.display='none';
-  if(!fixtures.length) return document.getElementById('fixtures-error').style.display='';
+  if(!fixtures.length)return document.getElementById('fixtures-error').style.display='';
   document.getElementById('fixtures-list').innerHTML=fixtures.map(m=>{
     const h=isMids(m.homeTeam);
     return `<div class="fixture-row upcoming">
@@ -603,34 +673,47 @@ function renderFixtures(fixtures) {
     </div>`;
   }).join('');
 }
-function renderTable(table,updated) {
+function renderTable(table){
   document.getElementById('table-loading').style.display='none';
   document.getElementById('table-wrap').style.display='';
   document.getElementById('table-body').innerHTML=table.map(r=>{
     const m=isMids(r.team);
     return `<tr ${m?'class="mids-row"':''}><td class="pos">${r.pos}</td><td class="team-col">${r.team}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.F}</td><td>${r.A}</td><td>${r.GD}</td><td class="pts">${r.PTS}</td></tr>`;
   }).join('');
-  if(updated){const d=new Date(updated);document.getElementById('table-updated').innerHTML=`Live data from <a href="https://sosfl.leaguerepublic.com" target="_blank">SOSL LeagueRepublic</a> · Updated ${d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} ${d.toLocaleDateString('en-GB')}`;}
+  const now=new Date();
+  document.getElementById('table-updated').innerHTML=`Live data from <a href="https://sosfl.leaguerepublic.com" target="_blank">SOSL LeagueRepublic</a> · Updated ${now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} ${now.toLocaleDateString('en-GB')}`;
 }
-function updateNextFixture(fixtures) {
-  if(!fixtures.length) return;
+function updateNextFixture(fixtures){
+  if(!fixtures.length)return;
   const f=fixtures[0];
   document.getElementById('nf-match').textContent=`${f.homeTeam} vs ${f.awayTeam}`;
   document.getElementById('nf-date').textContent=fmtDate(f.date);
   document.getElementById('nf-time').textContent=f.time;
   document.getElementById('nf-venue').textContent=f.venue||(isMids(f.homeTeam)?'New King Edward Park':'Away');
 }
-function showErr(p){document.getElementById(p+'-loading').style.display='none';document.getElementById(p+'-error').style.display='';}
-async function loadLiveData() {
-  try {
-    const res=await fetch('/api/mids');
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    if(data.error) throw new Error(data.error);
-    if(data.results?.length) renderResults(data.results); else showErr('results');
-    if(data.fixtures?.length){renderFixtures(data.fixtures);updateNextFixture(data.fixtures);} else showErr('fixtures');
-    if(data.table?.length) renderTable(data.table,data.updated); else showErr('table');
-  } catch(e){
+function showErr(p){
+  document.getElementById(p+'-loading').style.display='none';
+  document.getElementById(p+'-error').style.display='';
+}
+
+// ── Main: fetch directly via CORS proxy (no Cloudflare Function needed) ────
+async function loadLiveData(){
+  try{
+    const[teamRes,standingsRes]=await Promise.all([
+      fetch(PROXY+encodeURIComponent(TEAM_URL)),
+      fetch(PROXY+encodeURIComponent(STANDINGS_URL))
+    ]);
+    if(!teamRes.ok||!standingsRes.ok) throw new Error('Fetch failed');
+    const[teamHtml,standingsHtml]=await Promise.all([teamRes.text(),standingsRes.text()]);
+
+    const{results,fixtures}=parseTeam(teamHtml);
+    const table=parseStandings(standingsHtml);
+
+    if(results.length)  renderResults(results);   else showErr('results');
+    if(fixtures.length){renderFixtures(fixtures);updateNextFixture(fixtures);} else showErr('fixtures');
+    if(table.length)    renderTable(table);        else showErr('table');
+
+  }catch(e){
     console.error('Live data error:',e);
     ['results','fixtures','table'].forEach(showErr);
     document.getElementById('nf-match').textContent='See fixtures page';
