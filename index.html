@@ -33,15 +33,15 @@
   .mobile-nav.open { display: flex; }
   section { display: none; }
   section.active { display: block; }
-  .hero { background: var(--black); position: relative; overflow: hidden; min-height: 420px; display: block; }
+  .hero { background: var(--black); position: relative; overflow: hidden; min-height: 220px; display: block; }
   .hero-pitch { position: absolute; inset: 0; background: repeating-linear-gradient(90deg,transparent 0,transparent 48px,rgba(255,255,255,.02) 48px,rgba(255,255,255,.02) 49px),repeating-linear-gradient(0deg,transparent 0,transparent 48px,rgba(255,255,255,.02) 48px,rgba(255,255,255,.02) 49px); }
   .hero-stripe { position: absolute; right: 0; top: 0; bottom: 0; width: 40%; background: var(--yellow); clip-path: polygon(15% 0,100% 0,100% 100%,0% 100%); opacity: .06; }
-  .hero-logo-bg { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 320px; height: 320px; opacity: .06; }
-  .hero-content { max-width: 700px; margin: 0; padding: 4rem 1.5rem; position: relative; z-index: 2; }
-  .hero-tag { display: inline-block; background: var(--yellow); color: var(--black); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; padding: 5px 12px; margin-bottom: 1.2rem; }
-  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem,8vw,6.5rem); line-height: .95; letter-spacing: 1px; color: var(--white); margin-bottom: 1.2rem; }
+  .hero-logo-bg { position: absolute; right: 3%; top: 50%; transform: translateY(-50%); width: 180px; height: 180px; opacity: .06; }
+  .hero-content { max-width: 700px; margin: 0; padding: 1.75rem 1.5rem; position: relative; z-index: 2; }
+  .hero-tag { display: inline-block; background: var(--yellow); color: var(--black); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; padding: 4px 10px; margin-bottom: .6rem; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.4rem,5vw,3.8rem); line-height: .95; letter-spacing: 1px; color: var(--white); margin-bottom: .6rem; }
   .hero h1 span { color: var(--yellow); }
-  .hero-meta { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; gap: 24px; flex-wrap: wrap; }
+  .hero-meta { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; gap: 16px; flex-wrap: wrap; }
   .hero-meta span { display: flex; align-items: center; gap: 8px; }
   .hero-meta .dot { width: 6px; height: 6px; background: var(--yellow); border-radius: 50%; }
   .next-fixture { background: var(--yellow); color: var(--black); padding: 1rem 0; }
@@ -183,10 +183,10 @@
   .ad-slot .ad-label { font-family: 'Barlow Condensed',sans-serif; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: .5rem; }
   .ad-slot ins { display: block; margin: 0 auto; }
   /* ── Season at a glance ── */
-  .season-strip { background: var(--dark2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.25rem 1.5rem; }
+  .season-strip { background: var(--yellow); border-top: 1px solid rgba(0,0,0,.1); border-bottom: 1px solid rgba(0,0,0,.1); padding: .75rem 1.5rem .9rem; }
   .season-strip-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; text-align: center; }
-  .season-stat-num { font-family: 'Bebas Neue',sans-serif; font-size: 2rem; color: var(--yellow); line-height: 1; }
-  .season-stat-label { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-top: 3px; }
+  .season-stat-num { font-family: 'Bebas Neue',sans-serif; font-size: 2rem; color: var(--black); line-height: 1; }
+  .season-stat-label { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(0,0,0,.5); margin-top: 3px; }
   /* ── News cards (FB link) ── */
   .news-card { cursor: pointer; }
   .news-card:active { transform: scale(0.98); }
@@ -275,6 +275,7 @@
     </div>
   </div>
   <div class="season-strip">
+    <div style="max-width:1200px;margin:0 auto;padding:.4rem 1.5rem 0;"><span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(0,0,0,.45);">2025/26 Season at a Glance</span></div>
     <div class="season-strip-inner">
       <div><div class="season-stat-num" id="sg-pos">8th</div><div class="season-stat-label">League Position</div></div>
       <div><div class="season-stat-num" id="sg-pts">15</div><div class="season-stat-label">Points</div></div>
@@ -287,10 +288,33 @@
       <h2 class="section-title">Latest <span>News</span></h2>
       <div class="section-line"></div>
     </div>
-    <div class="news-grid">
-      <a class="news-card" href="https://www.facebook.com/midsNo1/" target="_blank" style="text-decoration:none;color:inherit;display:block"><div class="news-body"><div class="news-cat">Match Report</div><h3>Mids win 6–2 at home to Nithsdale Wanderers</h3><p>A commanding performance at New King Edward Park sees the Mids rack up six goals heading into the final weeks of the 2025–26 season.</p><div class="news-date">28 Mar 2026</div><span class="news-fb-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>View on Facebook</span></div></a>
-      <div class="news-card"><div class="news-body"><div class="news-cat">Cup</div><h3>Cup run continues with 3–1 win away at Creetown</h3><p>A well-taken away victory in the cup keeps the Mids' ambitions alive in the second half of the season.</p><div class="news-date">7 Mar 2026</div></div></div>
-      <a class="news-card" href="https://www.facebook.com/midsNo1/" target="_blank" style="text-decoration:none;color:inherit;display:block"><div class="news-body"><div class="news-cat">Club News</div><h3>Grassroots coaching initiative launched in Lockerbie schools</h3><p>Mid Annandale AFC has launched a new coaching programme across local primary schools this term, building the next generation of Mids supporters.</p><div class="news-date">1 Mar 2026</div><span class="news-fb-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877F2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>View on Facebook</span></div></a>
+    <!-- Facebook Page Plugin -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v19.0"></script>
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;">
+      <div style="flex:2;min-width:280px;">
+        <div class="fb-page"
+          data-href="https://www.facebook.com/midsNo1"
+          data-tabs="timeline"
+          data-width="600"
+          data-height="600"
+          data-small-header="true"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="false">
+        </div>
+      </div>
+      <div style="flex:1;min-width:240px;">
+        <div style="background:var(--dark2);border:1px solid var(--border);border-radius:4px;padding:1.5rem;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:.75rem;">Follow The Mids</div>
+          <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.25rem;line-height:1.6;">Get match reports, team news and club updates straight from the Mids Facebook page.</p>
+          <a href="https://www.facebook.com/midsNo1/?locale=en_GB" target="_blank"
+            style="display:inline-flex;align-items:center;gap:10px;background:#1877F2;color:white;text-decoration:none;padding:10px 18px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Like Us on Facebook
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
