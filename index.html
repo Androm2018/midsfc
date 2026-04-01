@@ -32,11 +32,11 @@
   .mobile-nav.open { display: flex; }
   section { display: none; }
   section.active { display: block; }
-  .hero { background: var(--black); position: relative; overflow: hidden; min-height: 420px; display: flex; align-items: center; }
+  .hero { background: var(--black); position: relative; overflow: hidden; min-height: 420px; display: block; }
   .hero-pitch { position: absolute; inset: 0; background: repeating-linear-gradient(90deg,transparent 0,transparent 48px,rgba(255,255,255,.02) 48px,rgba(255,255,255,.02) 49px),repeating-linear-gradient(0deg,transparent 0,transparent 48px,rgba(255,255,255,.02) 48px,rgba(255,255,255,.02) 49px); }
   .hero-stripe { position: absolute; right: 0; top: 0; bottom: 0; width: 40%; background: var(--yellow); clip-path: polygon(15% 0,100% 0,100% 100%,0% 100%); opacity: .06; }
   .hero-logo-bg { position: absolute; right: 5%; top: 50%; transform: translateY(-50%); width: 320px; height: 320px; opacity: .06; }
-  .hero-content { max-width: 1200px; margin: 0 auto; padding: 4rem 1.5rem; position: relative; z-index: 2; }
+  .hero-content { max-width: 700px; margin: 0; padding: 4rem 1.5rem; position: relative; z-index: 2; }
   .hero-tag { display: inline-block; background: var(--yellow); color: var(--black); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; padding: 5px 12px; margin-bottom: 1.2rem; }
   .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem,8vw,6.5rem); line-height: .95; letter-spacing: 1px; color: var(--white); margin-bottom: 1.2rem; }
   .hero h1 span { color: var(--yellow); }
@@ -570,9 +570,6 @@ function filterSquad(pos, btn) {
 }
 // ── Constants ──────────────────────────────────────────────────────────────
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const PROXY  = 'https://api.allorigins.win/raw?url=';
-const TEAM_URL      = 'https://sosfl.leaguerepublic.com/team/134996649/201795845.html';
-const STANDINGS_URL = 'https://sosfl.leaguerepublic.com/standingsForDate/178710391/2/-1/-1.html';
 
 // ── HTML parsing helpers ───────────────────────────────────────────────────
 function clean(html) {
@@ -696,27 +693,62 @@ function showErr(p){
   document.getElementById(p+'-error').style.display='';
 }
 
-// ── Main: fetch directly via CORS proxy (no Cloudflare Function needed) ────
+// ── Hardcoded current data — always shown instantly ────────────────────────
+const FALLBACK = {
+  results: [
+    {date:'31/03/26',time:'20:00',type:'cup',homeTeam:'Dalbeattie Star',homeScore:2,awayScore:1,awayTeam:'Mid Annandale'},
+    {date:'28/03/26',time:'14:00',type:'league',homeTeam:'Mid Annandale',homeScore:6,awayScore:2,awayTeam:'Nithsdale Wanderers'},
+    {date:'14/03/26',time:'14:00',type:'league',homeTeam:'Lochar Thistle',homeScore:7,awayScore:0,awayTeam:'Mid Annandale'},
+    {date:'07/03/26',time:'14:00',type:'cup',homeTeam:'Creetown',homeScore:1,awayScore:3,awayTeam:'Mid Annandale'},
+    {date:'21/02/26',time:'14:00',type:'league',homeTeam:'Wigtown & Bladnoch',homeScore:0,awayScore:2,awayTeam:'Mid Annandale'},
+    {date:'14/02/26',time:'14:00',type:'league',homeTeam:'Dalbeattie Star',homeScore:3,awayScore:0,awayTeam:'Mid Annandale'},
+    {date:'07/02/26',time:'14:00',type:'league',homeTeam:'Stranraer',homeScore:10,awayScore:1,awayTeam:'Mid Annandale'},
+    {date:'04/02/26',time:'19:45',type:'cup',homeTeam:'Mid Annandale',homeScore:3,awayScore:5,awayTeam:'Gretna 2008'},
+    {date:'24/01/26',time:'14:00',type:'league',homeTeam:'St Cuthbert Wanderers',homeScore:2,awayScore:2,awayTeam:'Mid Annandale'},
+    {date:'17/01/26',time:'14:00',type:'cup',homeTeam:'Mid Annandale',homeScore:1,awayScore:0,awayTeam:'St Cuthbert Wanderers'},
+    {date:'13/12/25',time:'14:00',type:'league',homeTeam:'Mid Annandale',homeScore:1,awayScore:3,awayTeam:'Creetown'},
+    {date:'05/12/25',time:'19:45',type:'cup',homeTeam:'St Cuthbert Wanderers',homeScore:2,awayScore:5,awayTeam:'Mid Annandale'},
+  ],
+  fixtures: [
+    {date:'08/04/26',time:'19:45',type:'league',homeTeam:'Mid Annandale',awayTeam:'Lochmaben',venue:'King Edward Park'},
+    {date:'15/04/26',time:'19:45',type:'cup',homeTeam:'Mid Annandale',awayTeam:'Newton Stewart',venue:'King Edward Park'},
+    {date:'18/04/26',time:'14:00',type:'league',homeTeam:'Newton Stewart',awayTeam:'Mid Annandale',venue:'Blairmount Park'},
+    {date:'22/04/26',time:'19:45',type:'league',homeTeam:'Creetown',awayTeam:'Mid Annandale',venue:'Castle Cary Park'},
+    {date:'25/04/26',time:'14:00',type:'league',homeTeam:'Abbey Vale',awayTeam:'Mid Annandale',venue:'Maryfield Park'},
+  ],
+  table: [
+    {pos:1,team:'Stranraer',P:18,W:15,D:1,L:2,F:72,A:22,GD:'+50',PTS:46},
+    {pos:2,team:'Dalbeattie Star',P:15,W:13,D:1,L:1,F:59,A:7,GD:'+52',PTS:40},
+    {pos:3,team:'Lochar Thistle',P:16,W:12,D:1,L:3,F:56,A:17,GD:'+39',PTS:37},
+    {pos:4,team:'Newton Stewart',P:15,W:10,D:1,L:4,F:45,A:18,GD:'+27',PTS:31},
+    {pos:5,team:'Abbey Vale',P:14,W:6,D:2,L:6,F:29,A:30,GD:'-1',PTS:20},
+    {pos:6,team:'Creetown',P:15,W:5,D:2,L:8,F:19,A:20,GD:'-1',PTS:17},
+    {pos:7,team:'Lochmaben',P:16,W:4,D:4,L:8,F:27,A:46,GD:'-19',PTS:16},
+    {pos:8,team:'Mid Annandale',P:16,W:4,D:3,L:9,F:26,A:51,GD:'-25',PTS:15},
+    {pos:9,team:'Nithsdale Wanderers',P:13,W:3,D:3,L:7,F:20,A:34,GD:'-14',PTS:12},
+    {pos:10,team:'St Cuthbert Wanderers',P:19,W:1,D:5,L:13,F:17,A:73,GD:'-56',PTS:8},
+    {pos:11,team:'Wigtown & Bladnoch',P:17,W:2,D:1,L:14,F:10,A:62,GD:'-52',PTS:7},
+  ]
+};
+
+// Show fallback data immediately — page is never blank
+renderResults(FALLBACK.results);
+renderFixtures(FALLBACK.fixtures);
+renderTable(FALLBACK.table);
+updateNextFixture(FALLBACK.fixtures);
+
+// Then try Cloudflare Function for fresher data
 async function loadLiveData(){
   try{
-    const[teamRes,standingsRes]=await Promise.all([
-      fetch(PROXY+encodeURIComponent(TEAM_URL)),
-      fetch(PROXY+encodeURIComponent(STANDINGS_URL))
-    ]);
-    if(!teamRes.ok||!standingsRes.ok) throw new Error('Fetch failed');
-    const[teamHtml,standingsHtml]=await Promise.all([teamRes.text(),standingsRes.text()]);
-
-    const{results,fixtures}=parseTeam(teamHtml);
-    const table=parseStandings(standingsHtml);
-
-    if(results.length)  renderResults(results);   else showErr('results');
-    if(fixtures.length){renderFixtures(fixtures);updateNextFixture(fixtures);} else showErr('fixtures');
-    if(table.length)    renderTable(table);        else showErr('table');
-
+    const res = await fetch('/api/mids');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if(data.error) throw new Error(data.error);
+    if(data.results?.length)  renderResults(data.results);
+    if(data.fixtures?.length){ renderFixtures(data.fixtures); updateNextFixture(data.fixtures); }
+    if(data.table?.length)    renderTable(data.table);
   }catch(e){
-    console.error('Live data error:',e);
-    ['results','fixtures','table'].forEach(showErr);
-    document.getElementById('nf-match').textContent='See fixtures page';
+    console.log('Live fetch unavailable, showing cached data:', e.message);
   }
 }
 loadLiveData();
