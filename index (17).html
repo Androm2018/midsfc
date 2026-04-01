@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mid Annandale AFC – The Mids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD200; --black: #0D0D0D; --dark: #161616; --dark2: #1E1E1E;
+    --dark3: #2A2A2A; --mid: #444; --white: #FFFFFF; --text-muted: #999;
+    --border: rgba(255,255,255,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Barlow', sans-serif; background: var(--dark); color: var(--white); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+  header { background: var(--black); border-bottom: 3px solid var(--yellow); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .club-brand { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+  .crest { width: 48px; height: 48px; flex-shrink: 0; }
+  .club-name .main { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--yellow); letter-spacing: 1px; display: block; }
+  .club-name .sub  { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; display: block; }
+  nav { display: flex; gap: 4px; }
+  nav button { background: none; border: none; color: #CCC; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 14px; cursor: pointer; border-radius: 4px; transition: color .2s, background .2s; white-space: nowrap; }
+  nav button:hover { color: var(--yellow); background: rgba(255,210,0,.07); }
+  nav button.active { color: var(--yellow); border-bottom: 2px solid var(--yellow); border-radius: 0; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); }
+  .mobile-nav { display: none; background: var(--black); border-top: 1px solid var(--border); padding: 1rem 1.5rem; flex-direction: column; gap: 4px; }
+  .mobile-nav button { background: none; border: none; color: #CCC; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 0; cursor: pointer; text-align: left; border-bottom: 1px solid var(--border); width: 100%; transition: color .2s; }
+  .mobile-nav button:hover, .mobile-nav button.active { color: var(--yellow); }
+  .mobile-nav.open { display: flex; }
+  section { display: none; }
+  section.active { display: block; }
+  .hero { background: var(--black); position: relative; overflow: hidden; min-height: 420px; display: flex; align-items: center; }
+  .hero-pitch { position: absolute; inset: 0; background: repeating-linear-gradient(90deg,transparent 0,transparent 48px,rgba(255,255,255,.02) 48px,rgba(255,255,255,.02) 49px),repeating-linear-gradient(0deg,transparent 0,transparent 48px,rgba(255,255,255,.02) 48px,rgba(255,255,255,.02) 49px); }
+  .hero-stripe { position: absolute; right: 0; top: 0; bottom: 0; width: 40%; background: var(--yellow); clip-path: polygon(15% 0,100% 0,100% 100%,0% 100%); opacity: .06; }
+  .hero-content { max-width: 1200px; margin: 0 auto; padding: 4rem 1.5rem; position: relative; z-index: 2; }
+  .hero-tag { display: inline-block; background: var(--yellow); color: var(--black); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; padding: 5px 12px; margin-bottom: 1.2rem; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.5rem,8vw,6.5rem); line-height: .95; letter-spacing: 1px; color: var(--white); margin-bottom: 1.2rem; }
+  .hero h1 span { color: var(--yellow); }
+  .hero-meta { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; gap: 24px; flex-wrap: wrap; }
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-meta .dot { width: 6px; height: 6px; background: var(--yellow); border-radius: 50%; }
+  .next-fixture { background: var(--yellow); color: var(--black); padding: 1rem 0; }
+  .next-fixture-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .nf-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(0,0,0,.5); }
+  .nf-match { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; color: var(--black); }
+  .nf-details { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(0,0,0,.6); margin-left: auto; display: flex; gap: 1.5rem; }
+  .section-inner { max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem; }
+  .section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid var(--dark3); padding-bottom: 1rem; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 1px; }
+  .section-title span { color: var(--yellow); }
+  .section-line { flex: 1; height: 1px; background: var(--dark3); }
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 1.5rem; }
+  .news-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color .2s, transform .2s; }
+  .news-card:hover { border-color: var(--yellow); transform: translateY(-2px); }
+  .news-thumb { background: var(--dark3); height: 160px; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue',sans-serif; font-size: 3rem; color: var(--yellow); opacity: .4; }
+  .news-body { padding: 1.25rem; }
+  .news-cat { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--yellow); margin-bottom: .5rem; }
+  .news-card h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.15rem; line-height: 1.3; margin-bottom: .5rem; }
+  .news-card p { font-size: .875rem; color: var(--text-muted); line-height: 1.5; }
+  .news-date { font-size: 12px; color: var(--text-muted); margin-top: 1rem; font-family: 'Barlow Condensed',sans-serif; letter-spacing: 1px; }
+  .tabs { display: flex; border-bottom: 2px solid var(--dark3); margin-bottom: 2rem; }
+  .tab-btn { background: none; border: none; color: var(--text-muted); font-family: 'Barlow Condensed',sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 12px 24px; cursor: pointer; transition: color .2s; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .tab-btn:hover { color: var(--white); }
+  .tab-btn.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .fixtures-list { display: flex; flex-direction: column; gap: 8px; }
+  .fixture-row { background: var(--dark2); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.25rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; transition: border-color .2s; }
+  .fixture-row:hover { border-color: rgba(255,210,0,.2); }
+  .fixture-row.result-win  { border-left: 3px solid #22c55e; }
+  .fixture-row.result-loss { border-left: 3px solid #ef4444; }
+  .fixture-row.result-draw { border-left: 3px solid #f59e0b; }
+  .fixture-row.upcoming    { border-left: 3px solid var(--yellow); }
+  .team-home { text-align: right; }
+  .team-name { font-family: 'Barlow Condensed',sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: .5px; }
+  .team-name.mids { color: var(--yellow); }
+  .team-meta { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; font-family: 'Barlow Condensed',sans-serif; text-transform: uppercase; }
+  .score-box { text-align: center; min-width: 80px; }
+  .score { font-family: 'Bebas Neue',sans-serif; font-size: 1.8rem; letter-spacing: 3px; display: block; }
+  .score-date { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+  .comp-badge { display: inline-block; background: var(--dark3); color: var(--text-muted); font-family: 'Barlow Condensed',sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; margin-top: 4px; }
+  .data-state { text-align: center; padding: 3rem 1.5rem; }
+  .data-state p { font-family: 'Barlow Condensed',sans-serif; letter-spacing: 2px; text-transform: uppercase; font-size: 13px; }
+  .data-state.loading p { color: var(--text-muted); }
+  .data-state.error p { color: #ef4444; }
+  .data-state a { color: var(--yellow); display: inline-block; margin-top: .5rem; font-family: 'Barlow Condensed',sans-serif; font-size: 12px; letter-spacing: 2px; }
+  .spinner { width: 28px; height: 28px; border: 3px solid var(--dark3); border-top-color: var(--yellow); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .updated-tag { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1.5rem; text-align: right; }
+  .updated-tag a { color: var(--text-muted); text-decoration: none; }
+  .updated-tag a:hover { color: var(--yellow); }
+  .table-wrap { overflow-x: auto; }
+  table.league-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  table.league-table th { font-family: 'Barlow Condensed',sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--dark3); }
+  table.league-table td { padding: 12px 12px; border-bottom: 1px solid var(--border); color: var(--white); }
+  table.league-table tr.mids-row td { background: rgba(255,210,0,.06); }
+  table.league-table tr.mids-row td.team-col { color: var(--yellow); font-weight: 600; }
+  table.league-table td.pos { color: var(--text-muted); font-weight: 600; width: 36px; }
+  table.league-table td.pts { font-weight: 700; color: var(--yellow); }
+  table.league-table tr:last-child td { border-bottom: none; }
+  .squad-filter { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+  .squad-filter button { background: var(--dark3); border: 1px solid var(--border); color: var(--text-muted); font-family: 'Barlow Condensed',sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 7px 16px; cursor: pointer; border-radius: 3px; transition: all .2s; }
+  .squad-filter button:hover { color: var(--white); background: var(--mid); }
+  .squad-filter button.active { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+  .squad-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 1rem; }
+  .player-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color .2s, transform .2s; }
+  .player-card:hover { border-color: var(--yellow); transform: translateY(-3px); }
+  .player-shirt { background: var(--black); height: 130px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .shirt-svg { width: 70px; height: 70px; }
+  .shirt-number { position: absolute; font-family: 'Bebas Neue',sans-serif; font-size: 2.5rem; color: rgba(255,255,255,.15); bottom: -4px; right: 8px; line-height: 1; }
+  .player-info { padding: .75rem 1rem; }
+  .player-pos { font-family: 'Barlow Condensed',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--yellow); margin-bottom: 4px; }
+  .player-name { font-family: 'Barlow Condensed',sans-serif; font-weight: 700; font-size: 1rem; line-height: 1.2; }
+  .management-strip { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 1rem; margin-bottom: 3rem; }
+  .mgmt-card { background: var(--dark2); border: 1px solid var(--yellow); border-radius: 4px; padding: 1.25rem; display: flex; align-items: center; gap: 1rem; }
+  .mgmt-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue',sans-serif; font-size: 1.4rem; color: var(--black); flex-shrink: 0; }
+  .mgmt-role { font-family: 'Barlow Condensed',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--yellow); margin-bottom: 3px; }
+  .mgmt-name { font-family: 'Barlow Condensed',sans-serif; font-weight: 700; font-size: 1.05rem; }
+  .history-hero { background: var(--black); padding: 3rem 1.5rem; text-align: center; border-bottom: 3px solid var(--yellow); position: relative; overflow: hidden; }
+  .history-hero::before { content: '1959'; position: absolute; font-family: 'Bebas Neue',sans-serif; font-size: 20rem; color: rgba(255,210,0,.03); top: 50%; left: 50%; transform: translate(-50%,-50%); line-height: 1; pointer-events: none; }
+  .history-hero h2 { font-family: 'Bebas Neue',sans-serif; font-size: 3.5rem; letter-spacing: 2px; position: relative; z-index: 2; }
+  .history-hero h2 span { color: var(--yellow); }
+  .history-hero p { font-family: 'Barlow Condensed',sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-top: .75rem; position: relative; z-index: 2; }
+  .stats-bar { background: var(--yellow); padding: 1.5rem; }
+  .stats-bar-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap: 1rem; text-align: center; }
+  .stat-num { font-family: 'Bebas Neue',sans-serif; font-size: 2.5rem; color: var(--black); line-height: 1; }
+  .stat-label { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(0,0,0,.55); margin-top: 4px; }
+  .timeline { position: relative; padding: 0 0 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--dark3); }
+  .timeline-item { position: relative; padding: 0 0 2.5rem 2.5rem; }
+  .timeline-dot { position: absolute; left: -7px; top: 6px; width: 17px; height: 17px; border-radius: 50%; background: var(--dark2); border: 3px solid var(--dark3); transition: border-color .2s; }
+  .timeline-item:hover .timeline-dot { border-color: var(--yellow); }
+  .timeline-item.highlight .timeline-dot { background: var(--yellow); border-color: var(--yellow); }
+  .timeline-year { font-family: 'Bebas Neue',sans-serif; font-size: 1.6rem; color: var(--yellow); letter-spacing: 1px; line-height: 1; margin-bottom: 6px; }
+  .timeline-title { font-family: 'Barlow Condensed',sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 6px; }
+  .timeline-text { font-size: .9rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .contact-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 4px; padding: 1.75rem; }
+  .contact-card h3 { font-family: 'Bebas Neue',sans-serif; font-size: 1.5rem; letter-spacing: 1px; color: var(--yellow); margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
+  .contact-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 1.1rem; }
+  .contact-icon { width: 36px; height: 36px; background: var(--dark3); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .contact-icon svg { width: 18px; height: 18px; stroke: var(--yellow); fill: none; stroke-width: 1.8; }
+  .contact-label { font-family: 'Barlow Condensed',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+  .contact-value { font-size: .9375rem; }
+  .social-links { display: flex; flex-direction: column; gap: 10px; margin-top: 1rem; }
+  .social-btn { display: flex; align-items: center; gap: 12px; background: var(--dark3); border: 1px solid var(--border); border-radius: 4px; padding: 12px 16px; text-decoration: none; color: var(--white); font-family: 'Barlow Condensed',sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 1px; transition: border-color .2s, background .2s; }
+  .social-btn:hover { border-color: var(--yellow); background: rgba(255,210,0,.05); }
+  .icon-wrap { width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .map-placeholder { background: var(--dark3); border-radius: 4px; border: 1px solid var(--border); height: 220px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; color: var(--text-muted); margin-top: 1.5rem; }
+  .map-placeholder svg { width: 32px; height: 32px; stroke: var(--yellow); fill: none; stroke-width: 1.5; }
+  .map-placeholder p { font-family: 'Barlow Condensed',sans-serif; font-size: .9rem; letter-spacing: 1px; }
+  footer { background: var(--black); border-top: 3px solid var(--yellow); padding: 2.5rem 1.5rem; text-align: center; margin-top: 4rem; }
+  footer .footer-brand { font-family: 'Bebas Neue',sans-serif; font-size: 1.8rem; letter-spacing: 2px; color: var(--yellow); margin-bottom: .5rem; }
+  footer p { font-family: 'Barlow Condensed',sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+  @media (max-width:768px) {
+    nav { display: none; } .hamburger { display: flex; } .hero h1 { font-size: 3.5rem; }
+    .fixture-row { grid-template-columns: 1fr; gap: .5rem; } .team-home { text-align: left; }
+    .score-box { text-align: left; } .contact-grid { grid-template-columns: 1fr; }
+    .squad-grid { grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="club-brand" onclick="showSection('home')">
+      <svg class="crest" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,4 96,28 96,72 50,96 4,72 4,28" fill="#0D0D0D" stroke="#FFD200" stroke-width="3"/>
+        <polygon points="50,12 88,32 88,68 50,88 12,68 12,32" fill="#0D0D0D" stroke="#FFD200" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <text x="50" y="42" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="16" fill="#FFD200" letter-spacing="1">MID</text>
+        <text x="50" y="57" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="10" fill="#FFD200" letter-spacing="2">ANNANDALE</text>
+        <text x="50" y="70" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="9" fill="rgba(255,210,0,0.5)" letter-spacing="2">AFC</text>
+        <line x1="20" y1="46" x2="80" y2="46" stroke="#FFD200" stroke-width=".8" opacity=".4"/>
+      </svg>
+      <div class="club-name">
+        <span class="main">Mid Annandale AFC</span>
+        <span class="sub">Est. 1959 · Lockerbie</span>
+      </div>
+    </div>
+    <nav>
+      <button class="active" onclick="showSection('home')">Home</button>
+      <button onclick="showSection('fixtures')">Fixtures</button>
+      <button onclick="showSection('squad')">Squad</button>
+      <button onclick="showSection('history')">History</button>
+      <button onclick="showSection('contact')">Contact</button>
+    </nav>
+    <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('fixtures')">Fixtures &amp; Results</button>
+    <button onclick="showSection('squad')">Squad</button>
+    <button onclick="showSection('history')">Club History</button>
+    <button onclick="showSection('contact')">Contact</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home" class="active">
+  <div class="hero">
+    <div class="hero-pitch"></div>
+    <div class="hero-stripe"></div>
+    <div class="hero-content">
+      <span class="hero-tag">South of Scotland Football League</span>
+      <h1>The<br><span>Mids</span></h1>
+      <div class="hero-meta">
+        <span><span class="dot"></span> New King Edward Park</span>
+        <span><span class="dot"></span> Lockerbie, D&amp;G</span>
+        <span><span class="dot"></span> Yellow &amp; Black</span>
+      </div>
+    </div>
+  </div>
+  <div class="next-fixture">
+    <div class="next-fixture-inner">
+      <div>
+        <div class="nf-label">Next Fixture</div>
+        <div class="nf-match" id="nf-match">Loading…</div>
+      </div>
+      <div class="nf-details">
+        <span id="nf-date"></span>
+        <span id="nf-time"></span>
+        <span id="nf-venue"></span>
+      </div>
+    </div>
+  </div>
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 class="section-title">Latest <span>News</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="news-grid">
+      <div class="news-card"><div class="news-thumb">⚽</div><div class="news-body"><div class="news-cat">Match Report</div><h3>Mids win 6–2 at home to Nithsdale Wanderers</h3><p>A commanding performance at New King Edward Park sees the Mids rack up an impressive six goals heading into the final weeks of the season.</p><div class="news-date">28 Mar 2026</div></div></div>
+      <div class="news-card"><div class="news-thumb">⚽</div><div class="news-body"><div class="news-cat">Cup</div><h3>Cup run continues as Mids beat Creetown away</h3><p>A 3–1 victory away from home in the cup keeps the Mids' cup aspirations very much alive in the second half of the season.</p><div class="news-date">7 Mar 2026</div></div></div>
+      <div class="news-card"><div class="news-thumb">⚽</div><div class="news-body"><div class="news-cat">Club News</div><h3>Community coaching initiative launched at local schools</h3><p>Mid Annandale AFC launches a grassroots coaching programme across Lockerbie primary schools, building the next generation of Mids supporters.</p><div class="news-date">1 Mar 2026</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FIXTURES & RESULTS -->
+<section id="fixtures">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 class="section-title">Fixtures <span>&amp; Results</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('results',this)">Results</button>
+      <button class="tab-btn" onclick="showTab('upcoming',this)">Upcoming</button>
+      <button class="tab-btn" onclick="showTab('table',this)">League Table</button>
+    </div>
+    <div class="tab-panel active" id="tab-results">
+      <div class="data-state loading" id="results-loading"><div class="spinner"></div><p>Loading results…</p></div>
+      <div class="fixtures-list" id="results-list"></div>
+      <div id="results-error" class="data-state error" style="display:none"><p>Could not load results</p><a href="https://sosfl.leaguerepublic.com/team/134996649/201795845.html" target="_blank">View on SOSL website →</a></div>
+    </div>
+    <div class="tab-panel" id="tab-upcoming">
+      <div class="data-state loading" id="fixtures-loading"><div class="spinner"></div><p>Loading fixtures…</p></div>
+      <div class="fixtures-list" id="fixtures-list"></div>
+      <div id="fixtures-error" class="data-state error" style="display:none"><p>Could not load fixtures</p><a href="https://sosfl.leaguerepublic.com/team/134996649/201795845.html" target="_blank">View on SOSL website →</a></div>
+    </div>
+    <div class="tab-panel" id="tab-table">
+      <div class="data-state loading" id="table-loading"><div class="spinner"></div><p>Loading league table…</p></div>
+      <div id="table-wrap" style="display:none">
+        <div class="table-wrap">
+          <table class="league-table">
+            <thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>F</th><th>A</th><th>GD</th><th>Pts</th></tr></thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+        <div id="table-updated" class="updated-tag"></div>
+      </div>
+      <div id="table-error" class="data-state error" style="display:none"><p>Could not load table</p><a href="https://sosfl.leaguerepublic.com/standingsForDate/178710391/2/-1/-1.html" target="_blank">View on SOSL website →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SQUAD -->
+<section id="squad">
+  <div class="section-inner">
+    <div class="section-header"><h2 class="section-title">The <span>Squad</span></h2><div class="section-line"></div></div>
+    <div class="management-strip">
+      <div class="mgmt-card"><div class="mgmt-avatar">CF</div><div><div class="mgmt-role">Manager</div><div class="mgmt-name">Craig Fraser</div></div></div>
+      <div class="mgmt-card"><div class="mgmt-avatar">AS</div><div><div class="mgmt-role">Assistant Manager</div><div class="mgmt-name">— Add Name —</div></div></div>
+      <div class="mgmt-card"><div class="mgmt-avatar">GK</div><div><div class="mgmt-role">Goalkeeping Coach</div><div class="mgmt-name">— Add Name —</div></div></div>
+    </div>
+    <div class="squad-filter">
+      <button class="active" onclick="filterSquad('all',this)">All Players</button>
+      <button onclick="filterSquad('GK',this)">Goalkeepers</button>
+      <button onclick="filterSquad('DEF',this)">Defenders</button>
+      <button onclick="filterSquad('MID',this)">Midfielders</button>
+      <button onclick="filterSquad('FWD',this)">Forwards</button>
+    </div>
+    <div class="squad-grid" id="squadGrid">
+      <div class="player-card" data-pos="GK"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">1</span></div><div class="player-info"><div class="player-pos">GK</div><div class="player-name">Craig Murray</div></div></div>
+      <div class="player-card" data-pos="DEF"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">2</span></div><div class="player-info"><div class="player-pos">RB</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="DEF"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">5</span></div><div class="player-info"><div class="player-pos">CB</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="DEF"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">6</span></div><div class="player-info"><div class="player-pos">CB</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="DEF"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">3</span></div><div class="player-info"><div class="player-pos">LB</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="MID"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">4</span></div><div class="player-info"><div class="player-pos">CM</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="MID"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">8</span></div><div class="player-info"><div class="player-pos">CM</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="MID"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">7</span></div><div class="player-info"><div class="player-pos">RM</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="MID"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">11</span></div><div class="player-info"><div class="player-pos">LM</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="FWD"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">10</span></div><div class="player-info"><div class="player-pos">AM</div><div class="player-name">— Add Name —</div></div></div>
+      <div class="player-card" data-pos="FWD"><div class="player-shirt"><svg class="shirt-svg" viewBox="0 0 80 80"><path d="M15,15 L5,30 L20,35 L20,70 L60,70 L60,35 L75,30 L65,15 L52,22 C50,10 30,10 28,22 Z" fill="#FFD200" stroke="#0D0D0D" stroke-width="2"/></svg><span class="shirt-number">9</span></div><div class="player-info"><div class="player-pos">ST</div><div class="player-name">Shaun Handling</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div class="history-hero">
+    <h2>The <span>History</span> of the Mids</h2>
+    <p>Lockerbie's Finest Since 1877</p>
+  </div>
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div><div class="stat-num">1877</div><div class="stat-label">First Founded</div></div>
+      <div><div class="stat-num">1959</div><div class="stat-label">Current Club Est.</div></div>
+      <div><div class="stat-num">2003</div><div class="stat-label">Joined SOSL</div></div>
+      <div><div class="stat-num">2nd</div><div class="stat-label">Best Finish ('18)</div></div>
+      <div><div class="stat-num">2,100</div><div class="stat-label">Record Attendance</div></div>
+    </div>
+  </div>
+  <div class="section-inner">
+    <div class="timeline">
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">1877</div><div class="timeline-title">The Original Mid-Annandale FC</div><p class="timeline-text">The very first Mid-Annandale Football Club is founded in Lockerbie — one of the earliest organised clubs in Dumfries and Galloway. They soon establish themselves as one of the stronger county sides, reaching the final 16 of the Scottish Cup.</p></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">1921–23</div><div class="timeline-title">Back-to-Back League Champions</div><p class="timeline-text">The reformed Mid-Annandale join the Southern Counties Football League and win the title in their first season, then retain it the following year.</p></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">1923</div><div class="timeline-title">Scottish Football League</div><p class="timeline-text">An invitation to join the newly formed Third Division of the Scottish Football League is accepted. The expansion folded in 1926, leaving the Mids without a league home.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1923</div><div class="timeline-title">Record Attendance Set</div><p class="timeline-text">A crowd of 2,100 packs in for a Scottish Cup tie against Queen of the South on 3 November 1923 — a record that still stands today.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1936</div><div class="timeline-title">The Original Club Folds</div><p class="timeline-text">After a sustained period without competitive league football, the original Mid-Annandale FC is dissolved.</p></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">1959</div><div class="timeline-title">Lockerbie Boys Club FC — The Mids Reborn</div><p class="timeline-text">Football returns to Lockerbie with the formation of Lockerbie Boys Club FC. The side enters the Dumfries Amateur Football League and builds strong community roots over the following decades.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">1978</div><div class="timeline-title">Amateur League Champions</div><p class="timeline-text">The club's sole Dumfries Amateur Football League title, claimed in the 1977–78 season.</p></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">2003</div><div class="timeline-title">South of Scotland Football League</div><p class="timeline-text">Mid Annandale step up from amateur football to join the South of Scotland Football League. A new era begins.</p></div>
+      <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2014–15</div><div class="timeline-title">New King Edward Park Reopens</div><p class="timeline-text">After sharing with Annan Athletic at Galabank, the redeveloped home ground reopens mid-season, giving the Mids a permanent base in Lockerbie.</p></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">2017–18</div><div class="timeline-title">Best Ever League Finish — Runners-Up</div><p class="timeline-text">Mid Annandale finish 2nd in the SOSL — their best ever finish — after a 2–0 defeat to Threave Rovers on the final decisive match day. The high point of the modern club's history.</p></div>
+      <div class="timeline-item highlight"><div class="timeline-dot"></div><div class="timeline-year">2024</div><div class="timeline-title">Craig Fraser Appointed Manager</div><p class="timeline-text">Craig Fraser takes charge in July 2024, leading the team into the 2024–25 and 2025–26 seasons in the South of Scotland Football League.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-header"><h2 class="section-title">Contact <span>&amp; Find Us</span></h2><div class="section-line"></div></div>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-card">
+          <h3>Club Information</h3>
+          <div class="contact-item"><div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="contact-label">Ground</div><div class="contact-value">New King Edward Park<br>Matthew's Loaning, Lockerbie<br>Dumfries &amp; Galloway, DG11 2PD</div></div></div>
+          <div class="contact-item"><div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="contact-label">League</div><div class="contact-value">South of Scotland Football League</div></div></div>
+          <div class="contact-item"><div class="contact-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><div><div class="contact-label">Home Kickoff</div><div class="contact-value">Saturdays · 2:00pm (Summer) / 3:00pm (Winter)</div></div></div>
+        </div>
+        <div class="map-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <p>New King Edward Park, Lockerbie DG11 2PD</p>
+          <a href="https://maps.google.com/?q=New+King+Edward+Park+Lockerbie" target="_blank" style="color:var(--yellow);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;">Open in Google Maps →</a>
+        </div>
+      </div>
+      <div>
+        <div class="contact-card">
+          <h3>Follow The Mids</h3>
+          <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1.25rem;">Stay up to date with match reports, team news, and club announcements.</p>
+          <div class="social-links">
+            <a class="social-btn" href="https://www.facebook.com/midsNo1/?locale=en_GB" target="_blank">
+              <div class="icon-wrap" style="background:#1877F2"><svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div>
+              <div><div style="font-size:13px;color:var(--text-muted);letter-spacing:1px;margin-bottom:2px;">FACEBOOK</div><div>Mid Annandale AFC</div></div>
+              <span style="margin-left:auto;color:var(--yellow);font-size:18px;">→</span>
+            </a>
+            <a class="social-btn" href="https://sosfl.leaguerepublic.com/team/134996649/201795845.html" target="_blank">
+              <div class="icon-wrap" style="background:#1a1a2e"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#FFD200" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+              <div><div style="font-size:13px;color:var(--text-muted);letter-spacing:1px;margin-bottom:2px;">SOSL WEBSITE</div><div>League &amp; Cup Stats</div></div>
+              <span style="margin-left:auto;color:var(--yellow);font-size:18px;">→</span>
+            </a>
+          </div>
+        </div>
+        <div class="contact-card" style="margin-top:1.5rem;">
+          <h3>Get In Touch</h3>
+          <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1rem;">For general enquiries, sponsorship, or media requests, reach out via our Facebook page.</p>
+          <div class="contact-item"><div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="contact-label">Membership &amp; Joining</div><div class="contact-value">Message us on Facebook to enquire about joining or attending training.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Mid Annandale AFC</div>
+  <p>The Mids · Lockerbie · South of Scotland Football League</p>
+  <p style="margin-top:.5rem;">Est. 1959 · New King Edward Park · DG11 2PD</p>
+</footer>
+
+<script>
+// Nav
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const ids = ['home','fixtures','squad','history','contact'];
+  document.querySelectorAll('nav button').forEach((b,i) => b.classList.toggle('active', ids[i]===id));
+  document.querySelectorAll('.mobile-nav button').forEach((b,i) => b.classList.toggle('active', ids[i]===id));
+  document.getElementById('mobileNav').classList.remove('open');
+  window.scrollTo(0,0);
+}
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('open'); }
+function filterSquad(pos, btn) {
+  document.querySelectorAll('.squad-filter button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.player-card').forEach(c => { c.style.display=(pos==='all'||c.dataset.pos===pos)?'':'none'; });
+}
+
+// Live data helpers
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(s) {
+  const p = s.split('/'); if (p.length!==3) return s;
+  return `${parseInt(p[0])} ${MONTHS[parseInt(p[1])-1]} ${p[2].length===2?'20'+p[2]:p[2]}`;
+}
+function isMids(n) { return n.toLowerCase().includes('mid annandale'); }
+function resultCls(m) {
+  const h=isMids(m.homeTeam), ms=h?m.homeScore:m.awayScore, os=h?m.awayScore:m.homeScore;
+  return ms>os?'result-win':ms<os?'result-loss':'result-draw';
+}
+function badge(t) { return `<span class="comp-badge">${t==='cup'?'Cup':'SOSL'}</span>`; }
+
+function renderResults(results) {
+  document.getElementById('results-loading').style.display='none';
+  if (!results.length) return document.getElementById('results-error').style.display='';
+  document.getElementById('results-list').innerHTML = results.map(m => {
+    const h=isMids(m.homeTeam);
+    return `<div class="fixture-row ${resultCls(m)}">
+      <div class="team-home"><div class="team-name ${h?'mids':''}">${m.homeTeam}</div><div class="team-meta">Home</div></div>
+      <div class="score-box"><span class="score">${m.homeScore} – ${m.awayScore}</span><span class="score-date">${fmtDate(m.date)}</span>${badge(m.type)}</div>
+      <div class="team-away"><div class="team-name ${!h?'mids':''}">${m.awayTeam}</div><div class="team-meta">Away</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderFixtures(fixtures) {
+  document.getElementById('fixtures-loading').style.display='none';
+  if (!fixtures.length) return document.getElementById('fixtures-error').style.display='';
+  document.getElementById('fixtures-list').innerHTML = fixtures.map(m => {
+    const h=isMids(m.homeTeam);
+    return `<div class="fixture-row upcoming">
+      <div class="team-home"><div class="team-name ${h?'mids':''}">${m.homeTeam}</div><div class="team-meta">Home</div></div>
+      <div class="score-box"><span class="score" style="font-size:1rem;color:var(--yellow)">vs</span><span class="score-date">${fmtDate(m.date)} · ${m.time}</span>${badge(m.type)}</div>
+      <div class="team-away"><div class="team-name ${!h?'mids':''}">${m.awayTeam}</div><div class="team-meta">${m.venue||'Away'}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable(table, updated) {
+  document.getElementById('table-loading').style.display='none';
+  document.getElementById('table-wrap').style.display='';
+  document.getElementById('table-body').innerHTML = table.map(r => {
+    const m = isMids(r.team);
+    return `<tr ${m?'class="mids-row"':''}>
+      <td class="pos">${r.pos}</td><td class="team-col">${r.team}</td>
+      <td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td>
+      <td>${r.F}</td><td>${r.A}</td><td>${r.GD}</td><td class="pts">${r.PTS}</td>
+    </tr>`;
+  }).join('');
+  if (updated) {
+    const d=new Date(updated);
+    document.getElementById('table-updated').innerHTML =
+      `Live data from <a href="https://sosfl.leaguerepublic.com" target="_blank">SOSL LeagueRepublic</a> · Updated ${d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} ${d.toLocaleDateString('en-GB')}`;
+  }
+}
+
+function updateNextFixture(fixtures) {
+  if (!fixtures.length) return;
+  const f = fixtures[0];
+  document.getElementById('nf-match').textContent = `${f.homeTeam} vs ${f.awayTeam}`;
+  document.getElementById('nf-date').textContent  = fmtDate(f.date);
+  document.getElementById('nf-time').textContent  = f.time;
+  document.getElementById('nf-venue').textContent = f.venue||(isMids(f.homeTeam)?'New King Edward Park':'Away');
+}
+
+function showErr(prefix) {
+  document.getElementById(prefix+'-loading').style.display='none';
+  document.getElementById(prefix+'-error').style.display='';
+}
+
+async function loadLiveData() {
+  try {
+    const res = await fetch('/api/mids');
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    if (data.results?.length)  renderResults(data.results);  else showErr('results');
+    if (data.fixtures?.length) { renderFixtures(data.fixtures); updateNextFixture(data.fixtures); } else showErr('fixtures');
+    if (data.table?.length)    renderTable(data.table, data.updated); else showErr('table');
+  } catch(e) {
+    console.error('Live data error:', e);
+    ['results','fixtures','table'].forEach(showErr);
+    document.getElementById('nf-match').textContent = 'See fixtures page';
+  }
+}
+loadLiveData();
+</script>
+</body>
+</html>
