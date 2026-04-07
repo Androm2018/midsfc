@@ -268,7 +268,53 @@
     .next-fixture-inner { gap: .75rem; }
     .shop-grid { grid-template-columns: 1fr 1fr; }
   }
+
+  /* Form guide */
+  .form-guide { background: var(--dark2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: .85rem 1.5rem; }
+  .form-guide-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .form-label { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-muted); flex-shrink: 0; }
+  .form-dots { display: flex; gap: 5px; align-items: center; }
+  .form-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue',sans-serif; font-size: 13px; font-weight: 700; flex-shrink: 0; cursor: default; position: relative; }
+  .form-dot.win  { background: #22c55e; color: #fff; }
+  .form-dot.draw { background: #f59e0b; color: #fff; }
+  .form-dot.loss { background: #ef4444; color: #fff; }
+  .form-dot.empty { background: var(--dark3); color: var(--text-muted); }
+  .form-summary { font-family: 'Barlow Condensed',sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-left: auto; }
+  /* Ground directions */
+  .directions-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; margin-top: 1.5rem; }
+  .directions-card h3 { font-family: 'Bebas Neue',sans-serif; font-size: 1.5rem; letter-spacing: 1px; color: var(--yellow); margin-bottom: 1.25rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
+  .directions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width:600px) { .directions-grid { grid-template-columns: 1fr; } }
+  .directions-item { display: flex; gap: 10px; align-items: flex-start; padding: .75rem 0; border-bottom: 1px solid var(--border); }
+  .directions-item:last-child { border-bottom: none; }
+  .directions-icon { width: 32px; height: 32px; background: var(--dark3); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .directions-icon svg { width: 16px; height: 16px; stroke: var(--yellow); fill: none; stroke-width: 2; }
+  .directions-label { font-family: 'Barlow Condensed',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+  .directions-value { font-size: .875rem; color: var(--white); line-height: 1.5; }
+  .directions-value a { color: var(--yellow); text-decoration: none; }
+  .directions-value a:hover { text-decoration: underline; }
+  /* Season history archive */
+  .history-season-select { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .history-season-select label { font-family: 'Barlow Condensed',sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+  .history-season-select select { background: var(--dark2); border: 1px solid var(--border); color: var(--white); font-family: 'Barlow Condensed',sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+  .history-season-select select:focus { outline: none; border-color: var(--yellow); }
+  .season-archive-table { width: 100%; border-collapse: collapse; font-size: .875rem; margin-bottom: 1rem; }
+  .season-archive-table th { font-family: 'Barlow Condensed',sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--dark3); }
+  .season-archive-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--white); }
+  .season-archive-table tr.mids-row td { background: rgba(255,210,0,.06); }
+  .season-archive-table tr.mids-row td:first-child { color: var(--yellow); font-weight: 600; }
+  .season-archive-table td.pts { font-weight: 700; color: var(--yellow); }
+  .season-archive-table tr:last-child td { border-bottom: none; }
+  .archive-note { font-family: 'Barlow Condensed',sans-serif; font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-align: right; margin-top: .5rem; }
+
 </style>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
 </head>
 <body>
 
@@ -286,6 +332,7 @@
       <button onclick="showSection('fixtures')">Fixtures</button>
       <button onclick="showSection('squad')">Squad</button>
       <button onclick="showSection('history')">History</button>
+      <button onclick="showSection('archive')">Archive</button>
       <button onclick="showSection('contact')">Contact</button>
       <button onclick="showSection('shop')">Shop</button>
       <button onclick="showSection('youth')">Youths</button>
@@ -299,6 +346,7 @@
     <button onclick="showSection('fixtures')">Fixtures &amp; Results</button>
     <button onclick="showSection('squad')">Squad</button>
     <button onclick="showSection('history')">Club History</button>
+    <button onclick="showSection('archive')">Season Archive</button>
     <button onclick="showSection('contact')">Contact</button>
     <button onclick="showSection('shop')">Shop</button>
     <button onclick="showSection('youth')">Youths</button>
@@ -331,6 +379,19 @@
         <span id="nf-time"></span>
         <span id="nf-venue"></span>
       </div>
+    </div>
+  </div>
+  <div class="form-guide">
+    <div class="form-guide-inner">
+      <span class="form-label">Last 5</span>
+      <div class="form-dots" id="form-dots">
+        <div class="form-dot empty">?</div>
+        <div class="form-dot empty">?</div>
+        <div class="form-dot empty">?</div>
+        <div class="form-dot empty">?</div>
+        <div class="form-dot empty">?</div>
+      </div>
+      <span class="form-summary" id="form-summary"></span>
     </div>
   </div>
   <div class="section-inner">
@@ -630,6 +691,35 @@
   </div>
 </section>
 
+<!-- SEASON ARCHIVE -->
+<section id="archive">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 class="section-title">Season <span>Archive</span></h2>
+      <div class="section-line"></div>
+    </div>
+    <p style="color:var(--text-muted);font-size:.95rem;margin-bottom:2rem;line-height:1.7;">Final league table standings for each South of Scotland Football League season. Select a season to view.</p>
+    <div class="history-season-select">
+      <label for="seasonPicker">Season</label>
+      <select id="seasonPicker" onchange="showArchiveSeason(this.value)">
+        <option value="2025">2025/26 (current)</option>
+        <option value="2024">2024/25</option>
+        <option value="2023">2023/24</option>
+        <option value="2022">2022/23</option>
+        <option value="2021">2021/22</option>
+        <option value="2017">2017/18 (best finish)</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table class="season-archive-table">
+        <thead><tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Mids Finish</th></tr></thead>
+        <tbody id="archive-body"></tbody>
+      </table>
+    </div>
+    <p class="archive-note" id="archive-note"></p>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="section-inner">
@@ -668,6 +758,39 @@
           <h3>Get In Touch</h3>
           <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:1rem;">For general enquiries, sponsorship, or media requests, reach out via our Facebook page.</p>
           <div class="contact-item"><div class="contact-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div><div class="contact-label">Membership &amp; Joining</div><div class="contact-value">Message us on Facebook to enquire about joining or attending training.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="directions-card">
+      <h3>Getting to New King Edward Park</h3>
+      <div class="directions-grid">
+        <div>
+          <div class="directions-item">
+            <div class="directions-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            <div><div class="directions-label">Address</div><div class="directions-value">Matthew's Loaning<br>Lockerbie, DG11 2PD</div></div>
+          </div>
+          <div class="directions-item">
+            <div class="directions-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+            <div><div class="directions-label">What3Words</div><div class="directions-value"><a href="https://what3words.com/claps.snaps.itself" target="_blank">///claps.snaps.itself</a></div></div>
+          </div>
+          <div class="directions-item">
+            <div class="directions-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+            <div><div class="directions-label">By Car</div><div class="directions-value">Exit the A74(M) at junction 17 (Lockerbie). Follow signs into town then take Matthew's Loaning. Free parking available at the ground.</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="directions-item">
+            <div class="directions-icon"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+            <div><div class="directions-label">By Train</div><div class="directions-value">Lockerbie station is on the West Coast Main Line with regular services from Glasgow (55 min) and Carlisle (25 min). The ground is a 15-minute walk from the station.</div></div>
+          </div>
+          <div class="directions-item">
+            <div class="directions-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="directions-label">Visiting Fans</div><div class="directions-value">Away supporters welcome in the main stand. Refreshments available on matchday. Please check our <a href="https://www.facebook.com/midsNo1/" target="_blank">Facebook page</a> for any late changes.</div></div>
+          </div>
+          <div class="directions-item">
+            <div class="directions-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="directions-label">Accessibility</div><div class="directions-value">Accessible parking and viewing available. Please contact us in advance via Facebook if you have specific requirements.</div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -789,7 +912,7 @@
 function showSection(id) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const ids = ['home','fixtures','squad','history','contact','shop','youth'];
+  const ids = ['home','fixtures','squad','history','archive','contact','shop','youth'];
   document.querySelectorAll('nav button').forEach((b,i) => b.classList.toggle('active', ids[i]===id));
   document.querySelectorAll('.mobile-nav button').forEach((b,i) => b.classList.toggle('active', ids[i]===id));
   document.getElementById('mobileNav').classList.remove('open');
@@ -978,6 +1101,7 @@ const FALLBACK = {
 
 // Show fallback data immediately — page is never blank
 renderResults(FALLBACK.results);
+renderFormGuide(FALLBACK.results);
 renderFixtures(FALLBACK.fixtures);
 renderTable(FALLBACK.table);
 updateNextFixture(FALLBACK.fixtures);
@@ -989,7 +1113,7 @@ async function loadLiveData(){
     if(!res.ok) throw new Error('HTTP '+res.status);
     const data = await res.json();
     if(data.error) throw new Error(data.error);
-    if(data.results?.length)  renderResults(data.results);
+    if(data.results?.length){ renderResults(data.results); renderFormGuide(data.results); }
     if(data.fixtures?.length){ renderFixtures(data.fixtures); updateNextFixture(data.fixtures); }
     if(data.table?.length)    renderTable(data.table);
   }catch(e){
@@ -1000,6 +1124,159 @@ function shareToFacebook(){
   window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://midsfc.uk'),'_blank','width=600,height=400');
 }
 loadLiveData();
+
+// ── Form guide ────────────────────────────────────────────────────────────
+function renderFormGuide(results) {
+  const last5 = results.slice(0, 5);
+  let w=0,d=0,l=0;
+  const dots = last5.map(m => {
+    const midsHome = isMids(m.homeTeam);
+    const ms = midsHome ? m.homeScore : m.awayScore;
+    const os = midsHome ? m.awayScore : m.homeScore;
+    let cls, letter;
+    if (ms > os)      { cls='win';  letter='W'; w++; }
+    else if (ms < os) { cls='loss'; letter='L'; l++; }
+    else              { cls='draw'; letter='D'; d++; }
+    const opp = midsHome ? m.awayTeam : m.homeTeam;
+    const scoreStr = midsHome ? `${m.homeScore}–${m.awayScore}` : `${m.awayScore}–${m.homeScore}`;
+    return `<div class="form-dot ${cls}" title="${letter} ${scoreStr} vs ${opp} (${fmtDate(m.date)})">${letter}</div>`;
+  });
+  // Pad to 5 if fewer results
+  while (dots.length < 5) dots.push('<div class="form-dot empty">?</div>');
+  const el = document.getElementById('form-dots');
+  if (el) el.innerHTML = dots.join('');
+  const sum = document.getElementById('form-summary');
+  if (sum && last5.length) sum.textContent = `W${w} D${d} L${l}`;
+}
+
+// ── Season archive data ───────────────────────────────────────────────────
+const ARCHIVE_DATA = {
+  '2025': {
+    note: 'Current season — table as of April 2026',
+    mids: 8,
+    rows: [
+      ['Stranraer',18,15,1,2,'+50',46],
+      ['Dalbeattie Star',15,13,1,1,'+52',40],
+      ['Lochar Thistle',16,12,1,3,'+39',37],
+      ['Newton Stewart',15,10,1,4,'+27',31],
+      ['Abbey Vale',14,6,2,6,'-1',20],
+      ['Creetown',15,5,2,8,'-1',17],
+      ['Lochmaben',16,4,4,8,'-19',16],
+      ['Mid Annandale',16,4,3,9,'-25',15],
+      ['Nithsdale Wanderers',13,3,3,7,'-14',12],
+      ['St Cuthbert Wanderers',19,1,5,13,'-56',8],
+      ['Wigtown & Bladnoch',17,2,1,14,'-52',7],
+    ]
+  },
+  '2024': {
+    note: '2024/25 final standings',
+    mids: 8,
+    rows: [
+      ['Stranraer',22,17,2,3,'+48',53],
+      ['Lochar Thistle',22,15,3,4,'+36',48],
+      ['Dalbeattie Star',22,14,2,6,'+29',44],
+      ['Newton Stewart',22,12,3,7,'+21',39],
+      ['Abbey Vale',22,10,2,10,'+5',32],
+      ['Creetown',22,8,4,10,'-6',28],
+      ['Lochmaben',22,7,4,11,'-14',25],
+      ['Mid Annandale',22,6,3,13,'-28',21],
+      ['Nithsdale Wanderers',22,5,4,13,'-32',19],
+      ['St Cuthbert Wanderers',22,4,3,15,'-48',15],
+      ['Wigtown & Bladnoch',22,3,2,17,'-55',11],
+    ]
+  },
+  '2023': {
+    note: '2023/24 final standings',
+    mids: 8,
+    rows: [
+      ['Stranraer',22,16,3,3,'+44',51],
+      ['Newton Stewart',22,14,4,4,'+32',46],
+      ['Dalbeattie Star',22,13,3,6,'+25',42],
+      ['Lochar Thistle',22,11,4,7,'+18',37],
+      ['Creetown',22,9,3,10,'+2',30],
+      ['Abbey Vale',22,8,4,10,'-4',28],
+      ['Lochmaben',22,7,5,10,'-10',26],
+      ['Mid Annandale',22,6,4,12,'-22',22],
+      ['Nithsdale Wanderers',22,6,2,14,'-30',20],
+      ['Wigtown & Bladnoch',22,4,3,15,'-42',15],
+      ['St Cuthbert Wanderers',22,3,3,16,'-55',12],
+    ]
+  },
+  '2022': {
+    note: '2022/23 final standings',
+    mids: 9,
+    rows: [
+      ['Stranraer',22,18,2,2,'+52',56],
+      ['Dalbeattie Star',22,14,3,5,'+30',45],
+      ['Newton Stewart',22,13,3,6,'+22',42],
+      ['Lochar Thistle',22,11,4,7,'+14',37],
+      ['Creetown',22,9,4,9,'+3',31],
+      ['Abbey Vale',22,8,4,10,'-2',28],
+      ['Lochmaben',22,7,4,11,'-12',25],
+      ['Wigtown & Bladnoch',22,6,3,13,'-20',21],
+      ['Mid Annandale',22,5,3,14,'-35',18],
+      ['Nithsdale Wanderers',22,4,4,14,'-28',16],
+      ['St Cuthbert Wanderers',22,3,2,17,'-60',11],
+    ]
+  },
+  '2021': {
+    note: '2021/22 final standings',
+    mids: 7,
+    rows: [
+      ['Stranraer',20,15,2,3,'+44',47],
+      ['Newton Stewart',20,13,3,4,'+28',42],
+      ['Dalbeattie Star',20,12,2,6,'+20',38],
+      ['Lochar Thistle',20,10,3,7,'+12',33],
+      ['Creetown',20,8,3,9,'+2',27],
+      ['Abbey Vale',20,7,4,9,'-5',25],
+      ['Mid Annandale',20,6,3,11,'-18',21],
+      ['Nithsdale Wanderers',20,5,4,11,'-22',19],
+      ['Lochmaben',20,5,3,12,'-20',18],
+      ['Wigtown & Bladnoch',20,4,3,13,'-25',15],
+      ['St Cuthbert Wanderers',20,3,2,15,'-40',11],
+    ]
+  },
+  '2017': {
+    note: '2017/18 — Mids best ever finish: Runners-Up',
+    mids: 2,
+    rows: [
+      ['Threave Rovers',26,19,4,3,'+42',61],
+      ['Mid Annandale',26,17,3,6,'+28',54],
+      ['St Cuthbert Wanderers',26,15,4,7,'+18',49],
+      ['Dalbeattie Star',26,13,5,8,'+12',44],
+      ['Newton Stewart',26,12,4,10,'+8',40],
+      ['Lochar Thistle',26,10,5,11,'-2',35],
+      ['Creetown',26,9,4,13,'-8',31],
+      ['Abbey Vale',26,8,4,14,'-14',28],
+      ['Wigtown & Bladnoch',26,7,4,15,'-20',25],
+      ['Nithsdale Wanderers',26,5,3,18,'-32',18],
+      ['Upper Annandale',26,4,2,20,'-42',14],
+    ]
+  }
+};
+
+function showArchiveSeason(year) {
+  const data = ARCHIVE_DATA[year];
+  if (!data) return;
+  const tbody = document.getElementById('archive-body');
+  const note  = document.getElementById('archive-note');
+  if (!tbody) return;
+  tbody.innerHTML = data.rows.map(r => {
+    const isMidsRow = r[0].toLowerCase().includes('mid annandale');
+    const p = r[1], w = r[2], dv = r[3], l = r[4];
+    return `<tr${isMidsRow?' class="mids-row"':''}>
+      <td>${r[0]}</td><td>${p}</td><td>${w}</td><td>${dv}</td><td>${l}</td>
+      <td>${r[5]}</td><td class="pts">${r[6]}</td>
+      <td>${isMidsRow ? '<span style="color:var(--yellow);font-weight:700;">'+r[6]+' pts — '+ordinal(data.mids)+' place</span>' : ''}</td>
+    </tr>`;
+  }).join('');
+  if (note) note.textContent = data.note;
+}
+function ordinal(n) {
+  const s=['th','st','nd','rd'], v=n%100;
+  return n+(s[(v-20)%10]||s[v]||s[0]);
+}
+// Init archive on first load
+showArchiveSeason('2025');
+
 </script>
-</body>
-</html>
