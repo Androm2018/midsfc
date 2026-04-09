@@ -3,7 +3,15 @@
 
 const TEAM_URL      = 'https://sosfl.leaguerepublic.com/team/134996649/201795845.html';
 const STANDINGS_URL = 'https://sosfl.leaguerepublic.com/standingsForDate/178710391/2/-1/-1.html';
-const UA            = 'Mozilla/5.0 (compatible; MidsAFC/1.0)';
+const UA            = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+const BROWSER_HEADERS = {
+  'User-Agent': UA,
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+  'Accept-Language': 'en-GB,en;q=0.9',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Cache-Control': 'no-cache',
+  'Pragma': 'no-cache',
+};
 
 // Decode common HTML entities then strip all tags
 function clean(html) {
@@ -121,8 +129,8 @@ export async function onRequest() {
 
   try {
     const [teamRes, standingsRes] = await Promise.all([
-      fetch(TEAM_URL,      { headers: { 'User-Agent': UA } }),
-      fetch(STANDINGS_URL, { headers: { 'User-Agent': UA } }),
+      fetch(TEAM_URL,      { headers: BROWSER_HEADERS }),
+      fetch(STANDINGS_URL, { headers: BROWSER_HEADERS }),
     ]);
 
     if (!teamRes.ok)      throw new Error(`Team page: ${teamRes.status}`);
