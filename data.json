@@ -1,0 +1,248 @@
+{
+  "updated": "2026-07-14T09:53:50Z",
+  "results": [],
+  "fixtures": [
+    {
+      "date": "01/08/26",
+      "time": "14:00",
+      "type": "league",
+      "homeTeam": "Stranraer",
+      "awayTeam": "Mid Annandale",
+      "venue": "Stranraer Academy"
+    },
+    {
+      "date": "05/08/26",
+      "time": "19:00",
+      "type": "league",
+      "homeTeam": "Lochmaben",
+      "awayTeam": "Mid Annandale",
+      "venue": "Whitehills Park"
+    },
+    {
+      "date": "07/08/26",
+      "time": "20:00",
+      "type": "league",
+      "homeTeam": "Gretna 2008",
+      "awayTeam": "Mid Annandale",
+      "venue": "Raydale Park"
+    },
+    {
+      "date": "12/08/26",
+      "time": "19:00",
+      "type": "league",
+      "homeTeam": "Nithsdale Wanderers",
+      "awayTeam": "Mid Annandale",
+      "venue": "Lorimer Park"
+    },
+    {
+      "date": "15/08/26",
+      "time": "14:00",
+      "type": "league",
+      "homeTeam": "Wigtown & Bladnoch",
+      "awayTeam": "Mid Annandale",
+      "venue": "Trammondford Park"
+    },
+    {
+      "date": "19/08/26",
+      "time": "19:45",
+      "type": "league",
+      "homeTeam": "Mid Annandale",
+      "awayTeam": "Lochar Thistle",
+      "venue": "King Edward Park"
+    },
+    {
+      "date": "26/08/26",
+      "time": "19:45",
+      "type": "league",
+      "homeTeam": "Mid Annandale",
+      "awayTeam": "Abbey Vale",
+      "venue": "King Edward Park"
+    },
+    {
+      "date": "29/08/26",
+      "time": "14:00",
+      "type": "cup",
+      "homeTeam": "Nithsdale Wanderers",
+      "awayTeam": "Mid Annandale",
+      "venue": "Lorimer Park"
+    },
+    {
+      "date": "12/09/26",
+      "time": "14:00",
+      "type": "league",
+      "homeTeam": "Mid Annandale",
+      "awayTeam": "St Cuthbert Wanderers",
+      "venue": "King Edward Park"
+    },
+    {
+      "date": "19/09/26",
+      "time": "14:00",
+      "type": "cup",
+      "homeTeam": "Stranraer",
+      "awayTeam": "Mid Annandale",
+      "venue": "Stranraer Academy"
+    },
+    {
+      "date": "10/10/26",
+      "time": "14:00",
+      "type": "cup",
+      "homeTeam": "Nithsdale Wanderers",
+      "awayTeam": "Mid Annandale",
+      "venue": "Lorimer Park"
+    },
+    {
+      "date": "16/01/27",
+      "time": "14:00",
+      "type": "cup",
+      "homeTeam": "Caledonian Braves",
+      "awayTeam": "Mid Annandale",
+      "venue": "Alliance Park"
+    }
+  ],
+  "table": [
+    {
+      "pos": 1,
+      "team": "Abbey Vale",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 2,
+      "team": "Annan Athletic CFC",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 3,
+      "team": "Creetown",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 4,
+      "team": "Gretna 2008",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 5,
+      "team": "Lochar Thistle",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 6,
+      "team": "Lochmaben",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 7,
+      "team": "Mid Annandale",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 8,
+      "team": "Nithsdale Wanderers",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 9,
+      "team": "Saltire City",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 10,
+      "team": "St Cuthbert Wanderers",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 11,
+      "team": "Stranraer",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    },
+    {
+      "pos": 12,
+      "team": "Wigtown & Bladnoch",
+      "P": 0,
+      "W": 0,
+      "D": 0,
+      "L": 0,
+      "F": 0,
+      "A": 0,
+      "GD": "0",
+      "PTS": 0
+    }
+  ]
+}
