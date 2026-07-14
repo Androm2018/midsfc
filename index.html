@@ -1061,14 +1061,14 @@ function renderFixtures(fixtures){
     </div>`;
   }).join('');
 }
-function renderTable(table){
+function renderTable(table, updatedIso){
   document.getElementById('table-loading').style.display='none';
   document.getElementById('table-wrap').style.display='';
   document.getElementById('table-body').innerHTML=table.map(r=>{
     const m=isMids(r.team);
     return `<tr ${m?'class="mids-row"':''}><td class="pos">${r.pos}</td><td class="team-col">${r.team}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.F}</td><td>${r.A}</td><td>${r.GD}</td><td class="pts">${r.PTS}</td></tr>`;
   }).join('');
-  const now=new Date();
+  const now = updatedIso ? new Date(updatedIso) : new Date();
   document.getElementById('table-updated').innerHTML=`Live data from <a href="https://sosfl.leaguerepublic.com" target="_blank">SOSL LeagueRepublic</a> · Updated ${now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})} ${now.toLocaleDateString('en-GB')}`;
 }
 function updateNextFixture(fixtures){
@@ -1087,7 +1087,9 @@ function showErr(p){
 // ── Hardcoded current data — always shown instantly ────────────────────────
 const FALLBACK = {
   results: [
-    {date:'22/04/26',time:'14:00',type:'league',homeTeam:'Creetown',homeScore:2,awayScore:1,awayTeam:'Mid Annandale'},
+    {date:'04/05/26',time:'20:00',type:'cup',homeTeam:'Mid Annandale',homeScore:0,awayScore:4,awayTeam:'Dalbeattie Star'},
+    {date:'25/04/26',time:'14:00',type:'league',homeTeam:'Abbey Vale',homeScore:4,awayScore:1,awayTeam:'Mid Annandale'},
+    {date:'22/04/26',time:'19:45',type:'league',homeTeam:'Creetown',homeScore:2,awayScore:1,awayTeam:'Mid Annandale'},
     {date:'18/04/26',time:'14:00',type:'league',homeTeam:'Newton Stewart',homeScore:4,awayScore:1,awayTeam:'Mid Annandale'},
     {date:'15/04/26',time:'19:45',type:'cup',homeTeam:'Mid Annandale',homeScore:0,awayScore:7,awayTeam:'Newton Stewart'},
     {date:'08/04/26',time:'19:45',type:'league',homeTeam:'Mid Annandale',homeScore:1,awayScore:5,awayTeam:'Lochmaben'},
@@ -1095,35 +1097,61 @@ const FALLBACK = {
     {date:'28/03/26',time:'14:00',type:'league',homeTeam:'Mid Annandale',homeScore:6,awayScore:2,awayTeam:'Nithsdale Wanderers'},
     {date:'14/03/26',time:'14:00',type:'league',homeTeam:'Lochar Thistle',homeScore:7,awayScore:0,awayTeam:'Mid Annandale'},
     {date:'07/03/26',time:'14:00',type:'cup',homeTeam:'Creetown',homeScore:1,awayScore:3,awayTeam:'Mid Annandale'},
-    {date:'21/02/26',time:'14:00',type:'league',homeTeam:'Wigtown & Bladnoch',homeScore:0,awayScore:2,awayTeam:'Mid Annandale'},
+    {date:'21/02/26',time:'14:00',type:'league',homeTeam:'Wigtown & Bladnoch',homeScore:0,awayScore:2,awayTeam:'0 - 2 (HT 0-0)'},
     {date:'14/02/26',time:'14:00',type:'league',homeTeam:'Dalbeattie Star',homeScore:3,awayScore:0,awayTeam:'Mid Annandale'},
     {date:'07/02/26',time:'14:00',type:'league',homeTeam:'Stranraer',homeScore:10,awayScore:1,awayTeam:'Mid Annandale'},
     {date:'04/02/26',time:'19:45',type:'cup',homeTeam:'Mid Annandale',homeScore:3,awayScore:5,awayTeam:'Gretna 2008'},
   ],
   fixtures: [
-    {date:'25/04/26',time:'14:00',type:'league',homeTeam:'Abbey Vale',awayTeam:'Mid Annandale',venue:'Maryfield Park'},
+    {date:'01/08/26',time:'14:00',type:'league',homeTeam:'Stranraer',awayTeam:'Mid Annandale',venue:'Stranraer Academy'},
+    {date:'05/08/26',time:'19:00',type:'league',homeTeam:'Lochmaben',awayTeam:'Mid Annandale',venue:'Whitehills Park'},
+    {date:'07/08/26',time:'20:00',type:'league',homeTeam:'Gretna 2008',awayTeam:'Mid Annandale',venue:'Raydale Park'},
+    {date:'12/08/26',time:'19:00',type:'league',homeTeam:'Nithsdale Wanderers',awayTeam:'Mid Annandale',venue:'Lorimer Park'},
+    {date:'15/08/26',time:'14:00',type:'league',homeTeam:'Wigtown & Bladnoch',awayTeam:'Mid Annandale',venue:'Trammondford Park'},
+    {date:'19/08/26',time:'19:45',type:'league',homeTeam:'Mid Annandale',awayTeam:'Lochar Thistle',venue:'King Edward Park'},
+    {date:'26/08/26',time:'19:45',type:'league',homeTeam:'Mid Annandale',awayTeam:'Abbey Vale',venue:'King Edward Park'},
+    {date:'29/08/26',time:'14:00',type:'cup',homeTeam:'Nithsdale Wanderers',awayTeam:'Mid Annandale',venue:'Lorimer Park'},
+    {date:'12/09/26',time:'14:00',type:'league',homeTeam:'Mid Annandale',awayTeam:'St Cuthbert Wanderers',venue:'King Edward Park'},
+    {date:'19/09/26',time:'14:00',type:'cup',homeTeam:'Stranraer',awayTeam:'Mid Annandale',venue:'Stranraer Academy'},
+    {date:'10/10/26',time:'14:00',type:'cup',homeTeam:'Nithsdale Wanderers',awayTeam:'Mid Annandale',venue:'Lorimer Park'},
+    {date:'16/01/27',time:'14:00',type:'cup',homeTeam:'Caledonian Braves',awayTeam:'Mid Annandale',venue:'Alliance Park'},
   ],
   table: [
-    {pos:1,team:'Stranraer',P:18,W:15,D:1,L:2,F:72,A:22,GD:'+50',PTS:46},
-    {pos:2,team:'Dalbeattie Star',P:15,W:13,D:1,L:1,F:59,A:7,GD:'+52',PTS:40},
-    {pos:3,team:'Lochar Thistle',P:16,W:12,D:1,L:3,F:56,A:17,GD:'+39',PTS:37},
-    {pos:4,team:'Newton Stewart',P:16,W:11,D:1,L:4,F:49,A:19,GD:'+30',PTS:34},
-    {pos:5,team:'Abbey Vale',P:14,W:6,D:2,L:6,F:29,A:30,GD:'-1',PTS:20},
-    {pos:6,team:'Creetown',P:16,W:6,D:2,L:8,F:21,A:21,GD:'0',PTS:20},
-    {pos:7,team:'Lochmaben',P:17,W:5,D:4,L:8,F:32,A:47,GD:'-15',PTS:19},
-    {pos:8,team:'Nithsdale Wanderers',P:13,W:3,D:3,L:7,F:20,A:34,GD:'-14',PTS:12},
-    {pos:9,team:'Mid Annandale',P:19,W:4,D:3,L:12,F:29,A:62,GD:'-33',PTS:15},
-    {pos:10,team:'St Cuthbert Wanderers',P:19,W:1,D:5,L:13,F:17,A:73,GD:'-56',PTS:8},
-    {pos:11,team:'Wigtown & Bladnoch',P:17,W:2,D:1,L:14,F:10,A:62,GD:'-52',PTS:7},
+    {pos:1,team:'Abbey Vale',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:2,team:'Annan Athletic CFC',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:3,team:'Creetown',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:4,team:'Gretna 2008',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:5,team:'Lochar Thistle',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:6,team:'Lochmaben',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:7,team:'Mid Annandale',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:8,team:'Nithsdale Wanderers',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:9,team:'Saltire City',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:10,team:'St Cuthbert Wanderers',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:11,team:'Stranraer',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
+    {pos:12,team:'Wigtown & Bladnoch',P:0,W:0,D:0,L:0,F:0,A:0,GD:'0',PTS:0},
   ]
 };
 
-// Render data — updated manually each matchweek
-renderResults(FALLBACK.results);
-renderFormGuide(FALLBACK.results);
-renderFixtures(FALLBACK.fixtures);
-renderTable(FALLBACK.table);
-updateNextFixture(FALLBACK.fixtures);
+// ── Render: auto-updated data.json first, embedded fallback otherwise ──────
+function renderAll(d){
+  renderResults(d.results);
+  renderFormGuide(d.results);
+  renderFixtures(d.fixtures);
+  renderTable(d.table, d.updated);
+  updateNextFixture(d.fixtures);
+}
+renderAll(FALLBACK);
+fetch('/data.json?t=' + Date.now(), {cache:'no-store'})
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(live => {
+    renderAll({
+      updated: live.updated,
+      results: (live.results && live.results.length) ? live.results : FALLBACK.results,
+      fixtures: (live.fixtures && live.fixtures.length) ? live.fixtures : FALLBACK.fixtures,
+      table: (live.table && live.table.length) ? live.table : FALLBACK.table
+    });
+  })
+  .catch(() => {/* embedded fallback already rendered */});
 
 // ── Form guide ────────────────────────────────────────────────────────────
 function renderFormGuide(results) {
